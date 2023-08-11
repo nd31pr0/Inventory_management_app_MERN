@@ -3,8 +3,26 @@ const dotenv = require('dotenv').config();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyparser = require('body-parser');
+const userRoutes = require('./routes/userRoutes');
+const errorHandler = require('./middleWare/errorMiddleWare');
 
 const app = express();
+
+//Middlewares 
+//app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+//app.use(bodyparser.json);
+
+//Routes middleware
+app.use("/api/users", userRoutes);
+
+// Routes 
+app.get('/', (req, res) => {
+    res.send("Home Page")
+})
+
+// Error Middleware
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000;
 
