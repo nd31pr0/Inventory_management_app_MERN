@@ -112,7 +112,84 @@ const loginUser = asyncHandler( async (req, res) => {
 }
 
 });
+
+//logout User
+const logout = asyncHandler (async (req, res) => {
+    res.cookie("token", "", {
+        path: "/",
+        httpOnly: true,
+        expires: new Date(0), // 1day from now.
+        sameSite: "none",
+        secure: true
+    });
+    return res.status(200).json({
+        message: "logout successful"
+    });
+});
+
+// get user profile data
+const getUser = asyncHandler (async (req, res) => {
+    const user = await User.findById(req.user._id)
+
+    if(user){
+        const {_id, name, email, photo, phone, bio} = user
+        res.status(201).json({
+            _id,
+            name,
+            email, 
+            photo, 
+            phone, 
+            bio,
+        })
+    } else {
+        res.status(400)
+        throw new Error("User not found")
+    }
+});
+// get login status
+const loginStatus = asyncHandler (async (req, res) => {
+    const token = req.cookies.token;
+    if(!token){
+        return res.json(false)
+    }
+
+    // verify token
+    const verified = jwt.verify(token, process.env.JWT_SECRET)
+    if(verified){
+        return res.json(true)
+    }
+    return res.json(false)
+})
+const updateUser = asyncHandler (async (req, res) => {
+    const user = await User.findById(req.user._id)
+
+    if (user){
+        const { name, email, photo, phone, bio} = user;
+        user.email = email;
+        user.name = req.body.name || name;
+        user.phone = req.body.phone || phone;
+        user.photo = req.body.photo || photo;
+        user.bio = req.body.bio || bio;
+        
+        const updatedUser = await user.save()
+        res.status(200).json({
+            name: updatedUser.name,
+            email: updatedUser.email, 
+            photo: updatedUser.photo, 
+            phone: updatedUser.phone, 
+            bio: updatedUser.bio,
+        })
+    } else {
+        res.status(404)
+        throw new Error("User not found")
+    }
+})
+
 module.exports = {
     registerUser,
     loginUser,
+    logout,
+    getUser,
+    loginStatus,
+    updateUser
 };
