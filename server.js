@@ -6,6 +6,8 @@ const bodyparser = require('body-parser');
 const userRoutes = require('./routes/userRoutes');
 const errorHandler = require('./middleWare/errorMiddleWare');
 const cookieParser = require('cookie-parser');
+const productRoute = require('./routes/productRoute');
+
 
 const app = express();
 
@@ -13,10 +15,15 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
+
 //app.use(bodyparser.json);
+app.use(bodyparser.urlencoded({
+    extended: true
+  }));
 
 //Routes middleware
 app.use("/api/users", userRoutes);
+app.use("/api/products", productRoute)
 
 // Routes 
 app.get('/', (req, res) => {

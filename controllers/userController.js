@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const Token = require("../models/tokenModel");
 const crypto = require("crypto");
 const sendEmail = require('../utils/sendEmail');
+const { log } = require('console');
 
 const generateToken = (id) => {
     return jwt.sign({id}, process.env.JWT_SECRET, {expiresIn: "1d"})
@@ -232,7 +233,8 @@ const forgotPassword = asyncHandler(async(req, res)=>{
 
 
     // create reset token
-    let resetToken = crypto.randomBytes(32).toString("hex") + user._id 
+    let resetToken = crypto.randomBytes(32).toString("hex") + user._id;
+    console.log(resetToken); 
 
     // hash the token before saving to db 
     const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex")
