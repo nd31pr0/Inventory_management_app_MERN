@@ -4,9 +4,10 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyparser = require('body-parser');
 const userRoutes = require('./routes/userRoutes');
+const productRoute = require('./routes/productRoute');
+const contactRoute = require('./routes/contactRoute');
 const errorHandler = require('./middleWare/errorMiddleWare');
 const cookieParser = require('cookie-parser');
-const productRoute = require('./routes/productRoute');
 const path = require('path');
 
 
@@ -29,7 +30,7 @@ app.use(bodyparser.urlencoded({
 //Routes middleware
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoute)
-
+app.use("/api/contactus", contactRoute);
 // Routes 
 app.get('/', (req, res) => {
     res.send("Home Page")
